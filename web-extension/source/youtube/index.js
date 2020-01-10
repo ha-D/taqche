@@ -22,8 +22,6 @@ container.prepend(content);
 
 const store = createStore(reducer, applyMiddleware(thunkMiddleware, createLogger()));
 
-console.log("DOING SHIT");
-
 ReactDOM.render(
   <Provider store={store}>
     <App />

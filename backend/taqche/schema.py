@@ -11,7 +11,7 @@ class MarkSchema(Schema):
     start = fields.Int(default=None)
     end = fields.Int(default=None)
     tags = fields.List(fields.Str(), default=[])
-    labels = fields.List(fields.Str(), default=[])
+    annotations = fields.List(fields.Str(), default=[])
     created_at = fields.DateTime(format='iso')
 
     @pre_load
@@ -39,8 +39,8 @@ class MarkAddTagSchema(Schema):
     tag = fields.Str(required=True)
 
 
-class MarkAddLabelSchema(Schema):
-    label = fields.Str(required=True)
+class MarkAddAnnotationSchema(Schema):
+    annotation = fields.Str(required=True)
 
 
 class MarkListQuerySchema(Schema):

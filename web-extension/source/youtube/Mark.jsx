@@ -8,7 +8,7 @@ import Chip from '@material-ui/core/Chip';
 import TextField from '@material-ui/core/TextField';
 
 import { connect } from "react-redux";
-import { createMark, updateMarkRange, addTag, addLabel, deleteTag, deleteLabel, publishNotif } from '../redux/actions';
+import { createMark, updateMarkRange, addTag, addAnnotation, deleteTag, deleteAnnotation, publishNotif } from '../redux/actions';
 import * as YT from './yt-helper';
 
 const tagContainerStyles = makeStyles(theme => ({
@@ -49,22 +49,22 @@ const CustomSlider = withStyles({
 })(Slider);
 
 
-function valueLabelFormat(value) {
+function timeFormat(value) {
   value = Math.floor(value);
   return ("0" + (Math.floor(value / 60))).slice(-2) + ":" + ("0" + (value % 60)).slice(-2);
 }
   
 function Mark({
-    mark, disableTime, updateMarkRange, addTag, addLabel, 
-    deleteTag, deleteLabel, publishNotif, createMark
+    mark, disableTime, updateMarkRange, addTag, addAnnotation, 
+    deleteTag, deleteAnnotation, publishNotif, createMark
 }) {
   const [range, setNewRange] = React.useState([mark.start, mark.end]);
   const [tag, setTag] = React.useState('');
-  const [label, setLabel] = React.useState('');
+  const [annotation, setAnnotation] = React.useState('');
   const [tagEnabled, setTagEnabled] = React.useState(true);
-  const [labelEnabled, setLabelEnabled] = React.useState(true);
+  const [annotationEnabled, setAnnotationEnabled] = React.useState(true);
   const [deletedTags, setDeletedTags] = React.useState([]);
-  const [deletedLabels, setDeletedLabels] = React.useState([]);
+  const [deletedAnnotations, setDeletedAnnotations] = React.useState([]);
   const tagContainerClasses = tagContainerStyles();
 
   const isTemplateMark = () => mark.id === '~template~';
@@ -74,7 +74,7 @@ function Mark({
         createMark({
         ...YT.getVideoData(),
         tags: [tag],
-        labels: []
+        annotations: []
       });
     } else {
       if (mark.tags.indexOf(tag) !== -1) {
@@ -101,35 +101,35 @@ function Mark({
     });
   }
 
-  const handleAddLabel = () => {
+  const handleAddAnnotation = () => {
     if (isTemplateMark()) {
       createMark({
         ...YT.getVideoData(),
         tags: [],
-        labels: [label]
+        annotations: [annotation]
       });
     } else {
-      if (mark.labels.indexOf(label) !== -1) {
-        publishNotif('error', 'Label already exists');
+      if (mark.annotations.indexOf(annotation) !== -1) {
+        publishNotif('error', 'Annotation already exists');
         return;
       }
 
-      setLabelEnabled(false);
-      addLabel(mark.id, label)
+      setAnnotationEnabled(false);
+      addAnnotation(mark.id, annotation)
       .then(success => {
         if (success) {
-          setLabel('');
+          setAnnotation('');
         }
-        setLabelEnabled(true);
+        setAnnotationEnabled(true);
       });
     }
   }
 
-  const handleDeleteLabel = (label) => {
-    setDeletedLabels(deletedLabels.concat([label]));
-    deleteLabel(mark.id, label)
+  const handleDeleteAnnotation = (annotation) => {
+    setDeletedAnnotations(deletedAnnotations.concat([annotation]));
+    deleteAnnotation(mark.id, annotation)
     .then(success => {
-      setDeletedLabels(deletedLabels.splice(deletedLabels.indexOf(label)));
+      setDeletedAnnotations(deletedAnnotations.splice(deletedAnnotations.indexOf(annotation)));
     });
   }
 
@@ -139,8 +139,8 @@ function Mark({
         <Grid container item direction="row">
           <Grid item container xs={4}>
             <ButtonGroup size="medium">
-              <Button onClick={() => YT.setCurrentTime(range[0])}>{valueLabelFormat(range[0])}</Button>
-              <Button onClick={() => YT.setCurrentTime(range[1])}>{valueLabelFormat(range[1])}</Button>
+              <Button onClick={() => YT.setCurrentTime(range[0])}>{timeFormat(range[0])}</Button>
+              <Button onClick={() => YT.setCurrentTime(range[1])}>{timeFormat(range[1])}</Button>
             </ButtonGroup>
           </Grid>
           <Grid item container xs={8}>
@@ -151,7 +151,7 @@ function Mark({
                 valueLabelDisplay="off"
                 min={0}
                 max={YT.getVideoDuration()}
-                valueLabelFormat={valueLabelFormat}
+                valueLabelFormat={timeFormat}
             />
           </Grid>
         </Grid>
@@ -165,12 +165,12 @@ function Mark({
               onDelete={() => handleDeleteTag(tag)}
           />
         ))}
-        {(mark.labels || []).map(label => (
+        {(mark.annotations || []).map(annotation => (
           <Chip size="small" color="secondary"
-              disabled={deletedLabels.indexOf(label) >= 0}
-              key={label}
-              label={label}
-              onDelete={() => handleDeleteLabel(label)}
+              disabled={deletedAnnotations.indexOf(annotation) >= 0}
+              key={annotation}
+              label={annotation}
+              onDelete={() => handleDeleteAnnotation(annotation)}
           />
         ))}
       </div>
@@ -186,11 +186,11 @@ function Mark({
         </Grid>
         <Grid item container xs={8}>
           <TextField
-            value={label}
-            onChange={e => setLabel(e.target.value)}
-            onKeyDown={(e) => e.keyCode === 13 && handleAddLabel()}
-            disabled={!labelEnabled}
-            size="small" label="Label" fullWidth color="secondary"
+            value={annotation}
+            onChange={e => setAnnotation(e.target.value)}
+            onKeyDown={(e) => e.keyCode === 13 && handleAddAnnotation()}
+            disabled={!annotationEnabled}
+            size="small" label="Annotation" fullWidth color="secondary"
           />
         </Grid>
       </Grid>
@@ -200,9 +200,9 @@ function Mark({
 
 const mapDispatchToProps = {
   addTag,
-  addLabel,
+  addAnnotation,
   deleteTag,
-  deleteLabel,
+  deleteAnnotation,
   updateMarkRange,
   publishNotif,
   createMark

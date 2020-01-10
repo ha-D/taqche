@@ -7,7 +7,7 @@ import pytz
 import string
 import random
 
-from .schema import MarkSchema, MarkCreateSchema, MarkUpdateSchema, MarkAddTagSchema, MarkAddLabelSchema, MarkListQuerySchema
+from .schema import MarkSchema, MarkCreateSchema, MarkUpdateSchema, MarkAddTagSchema, MarkAddAnnotationSchema, MarkListQuerySchema
 from .db import get_db
 from . import settings
 
@@ -56,14 +56,14 @@ def add_or_remove_tag(mark_id, action):
     return MarkSchema().dump(mark)
 
 
-@bp.route('/mark/<mark_id>/label/<action>', methods=['POST'])
-def add_or_remove_label(mark_id, action):
+@bp.route('/mark/<mark_id>/annotation/<action>', methods=['POST'])
+def add_or_remove_annotation(mark_id, action):
     if action not in ['add', 'delete']:
         return 'Invalid action', 404
-    label = MarkAddLabelSchema().load(request.json or {})['label']
+    annotation = MarkAddAnnotationSchema().load(request.json or {})['annotation']
     mark = db.marks.find_one_and_update(
         {'id': mark_id},
-        {('$push' if action == 'add' else '$pull'): {'labels': label}},
+        {('$push' if action == 'add' else '$pull'): {'annotations': annotation}},
         return_document=ReturnDocument.AFTER
     )
     return MarkSchema().dump(mark)

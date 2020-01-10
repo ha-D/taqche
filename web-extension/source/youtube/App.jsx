@@ -18,7 +18,7 @@ const Divider = () => (<RawDivider style={{marginTop: '15px', marginBottom: '15p
 const templateMark = {
   id: '~template~',
   tags: [],
-  labels: []
+  annotations: []
 }
 
 function App({rangedMarks, rangelessMarks, createMark, 
@@ -29,7 +29,7 @@ function App({rangedMarks, rangelessMarks, createMark,
   }, []);
 
   if (isLoading) {
-    return (<LinearProgress style={{marginBottom: '10px'}}/>)
+    return (<LinearProgress style={{marginBottom: '10px'}} color="secondary"/>)
   }
 
   const createMarkWithOffset = offset => {

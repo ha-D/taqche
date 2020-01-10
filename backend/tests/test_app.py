@@ -24,7 +24,7 @@ sample_request = {
     'source_id': 'yudvsa',
     'channel': 'WSH',
     'tags': ['tag1', 'tag2'],
-    'labels': ['label1', 'label2']
+    'annotations': ['annotation1', 'annotation2']
 }
 
 
@@ -88,16 +88,16 @@ def test_add_tag(client):
     assert all(new_data[k] == mark[k] for k in new_data)
 
 
-def test_add_label(client):
+def test_add_annotation(client):
     data = deepcopy(sample_request)
     data['id'] = 'mark1'
     client.db.marks.insert_one(deepcopy(data))
 
-    resp = client.post('/mark/mark1/label', json={'label': 'label3'})
+    resp = client.post('/mark/mark1/annotation', json={'annotation': 'annotation3'})
     assert resp.status_code == 200
 
     new_data = deepcopy(data)
-    new_data['labels'].append('label3')
+    new_data['annotations'].append('annotation3')
     mark = client.db.marks.find_one({'id': 'mark1'})
     assert all(new_data[k] == mark[k] for k in new_data)
 
@@ -116,16 +116,16 @@ def test_delete_tag(client):
     assert all(new_data[k] == mark[k] for k in new_data)
 
 
-def test_delete_label(client):
+def test_delete_annotation(client):
     data = deepcopy(sample_request)
     data['id'] = 'mark1'
     client.db.marks.insert_one(deepcopy(data))
 
-    resp = client.delete('/mark/mark1/label', json={'label': 'label2'})
+    resp = client.delete('/mark/mark1/annotation', json={'annotation': 'annotation2'})
     assert resp.status_code == 200
 
     new_data = deepcopy(data)
-    new_data['labels'].pop()
+    new_data['annotations'].pop()
     mark = client.db.marks.find_one({'id': 'mark1'})
     assert all(new_data[k] == mark[k] for k in new_data)
 

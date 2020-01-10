@@ -119,25 +119,25 @@ export const addTag = (markId, tag) => {
   }
 };
 
-export const ADD_LABEL = 'add_label';
+export const ADD_LABEL = 'add_annotation';
 
-const _addLabel = (status, markId, label) => ({
+const _addAnnotation = (status, markId, annotation) => ({
   type: ADD_LABEL,
-  payload: {markId, label},
+  payload: {markId, annotation},
   status
 });
 
-export const addLabel = (markId, label) => {
+export const addAnnotation = (markId, annotation) => {
   return dispatch => {
-    dispatch(_addLabel(null, markId, label));
-    return api.post(`/mark/${markId}/label/add`, {label})
+    dispatch(_addAnnotation(null, markId, annotation));
+    return api.post(`/mark/${markId}/annotation/add`, {annotation})
     .then(resp => {
       dispatch(receiveMark(resp.data));
-      dispatch(_addLabel('success', markId, label));
+      dispatch(_addAnnotation('success', markId, annotation));
       return true;
     }).catch(e => {
-      dispatch(_addLabel('fail', markId, label));
-      dispatch(publishNotif('error', `Adding label failed: ${e.message}`));
+      dispatch(_addAnnotation('fail', markId, annotation));
+      dispatch(publishNotif('error', `Adding annotation failed: ${e.message}`));
       return false;
     });
   }
@@ -167,25 +167,25 @@ export const deleteTag = (markId, tag) => {
   }
 };
 
-export const DELETE_LABEL = 'delete_label';
+export const DELETE_LABEL = 'delete_annotation';
 
-const _deleteLabel = (status, markId, label) => ({
+const _deleteAnnotation = (status, markId, annotation) => ({
   type: DELETE_LABEL,
-  payload: {markId, label},
+  payload: {markId, annotation},
   status
 });
 
-export const deleteLabel = (markId, label) => {
+export const deleteAnnotation = (markId, annotation) => {
   return dispatch => {
-    dispatch(_deleteLabel(null, markId, label));
-    return api.post(`/mark/${markId}/label/delete`, {label})
+    dispatch(_deleteAnnotation(null, markId, annotation));
+    return api.post(`/mark/${markId}/annotation/delete`, {annotation})
     .then(resp => {
       dispatch(receiveMark(resp.data));
-      dispatch(_deleteLabel('success', markId, label));
+      dispatch(_deleteAnnotation('success', markId, annotation));
       return true;
     }).catch(e => {
-      dispatch(_deleteLabel('fail', markId, label));
-      dispatch(publishNotif('error', `Adding label failed: ${e.message}`));
+      dispatch(_deleteAnnotation('fail', markId, annotation));
+      dispatch(publishNotif('error', `Adding annotation failed: ${e.message}`));
       return false;
     });
   }
