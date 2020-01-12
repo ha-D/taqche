@@ -1,14 +1,13 @@
 import {
-  SHOW_NOTIF, 
+  SHOW_NOTIF,
   HIDE_NOTIF,
   FETCH_MARKS,
   RECEIVE_MARK,
-  ADD_MARK
-} from './actions'
+} from './actions';
 
 function replaceOrAddMark(list, mark) {
   const newList = list.slice();
-  for (let i = 0; i < newList.length; i++) {
+  for (let i = 0; i < newList.length; i += 1) {
     if (newList[i].id === mark.id) {
       newList[i] = mark;
       return newList;
@@ -20,35 +19,37 @@ function replaceOrAddMark(list, mark) {
 
 export default function rootReducer(state = {
   isLoading: false,
-  notification: {show: false, message: '', severity: 'info'},
-  createMarkInProgress: false, 
+  notification: { show: false, message: '', severity: 'info' },
+  createMarkInProgress: false,
   rangelessMarks: [],
-  rangedMarks: []
+  rangedMarks: [],
 }, action) {
-  switch(action.type) {
+  switch (action.type) {
     case SHOW_NOTIF:
-      return Object.assign({}, state, { notification: {...action.payload, show: true}});
+      return { ...state, notification: { ...action.payload, show: true } };
     case HIDE_NOTIF:
-      return Object.assign({}, state, { notification: {...(state.notification || {}), show: false}});
+      return { ...state, notification: { ...(state.notification || {}), show: false } };
     case FETCH_MARKS:
       if (action.status == null) {
-        return Object.assign({}, state, { isLoading: true });
+        return { ...state, isLoading: true };
       } else if (action.status === 'success') {
-        return Object.assign({}, state, { 
+        return {
+          ...state,
           isLoading: false,
           rangelessMarks: action.payload.filter(m => m.start == null),
-          rangedMarks: action.payload.filter(m => m.start != null)
-        }); 
+          rangedMarks: action.payload.filter(m => m.start != null),
+        };
       } else if (action.status === 'fail') {
-        return Object.assign({}, state, { isLoading: false }); 
+        return { ...state, isLoading: false };
       }
+      break;
     case RECEIVE_MARK:
       if (action.payload.start == null) {
-        return Object.assign({}, state, { rangelessMarks: replaceOrAddMark(state.rangelessMarks, action.payload)});
+        return { ...state, rangelessMarks: replaceOrAddMark(state.rangelessMarks, action.payload) };
       } else {
-        return Object.assign({}, state, { rangedMarks: replaceOrAddMark(state.rangedMarks, action.payload)});
+        return { ...state, rangedMarks: replaceOrAddMark(state.rangedMarks, action.payload) };
       }
+    default:
   }
   return state;
 }
-

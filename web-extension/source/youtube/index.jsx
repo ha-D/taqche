@@ -1,20 +1,19 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-
-import App from './App';
-
-import { Provider } from 'react-redux'
+import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
-import thunkMiddleware from 'redux-thunk'
-import { createLogger } from 'redux-logger'
+import thunkMiddleware from 'redux-thunk';
+import { createLogger } from 'redux-logger';
+
 import reducer from '../redux/reducers';
+import App from './App';
 
 const ads = document.getElementById('offer-module');
 if (ads) {
-    ads.remove();
+  ads.remove();
 }
 
-const container =  document.getElementById('secondary-inner');
+const container = document.getElementById('secondary-inner');
 const content = document.createElement('div');
 content.classList = 'style-scope ytd-watch-flexy';
 content.id = 'cosmo';
@@ -26,5 +25,5 @@ ReactDOM.render(
   <Provider store={store}>
     <App />
   </Provider>,
-  content
+  content,
 );

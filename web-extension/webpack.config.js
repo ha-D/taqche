@@ -7,7 +7,7 @@ module.exports = {
 	devtool: 'sourcemap',
 	stats: 'errors-only',
 	entry: {
-		youtube: './source/youtube/index.js'
+		youtube: './source/youtube/index.jsx'
 	},
 	output: {
 		path: path.join(__dirname, 'distribution'),

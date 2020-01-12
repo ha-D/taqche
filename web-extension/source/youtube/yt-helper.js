@@ -25,8 +25,8 @@ export function getVideoData() {
     platform: 'youtube',
     channel: getChannel(),
     source_id: getVideoId(),
-    title: getVideoTitle()
-  }
+    title: getVideoTitle(),
+  };
 }
 
 export function setCurrentTime(time) {

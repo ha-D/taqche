@@ -1,13 +1,15 @@
-from flask import Flask, request, Blueprint
-from marshmallow import EXCLUDE
-from marshmallow.exceptions import ValidationError
-from pymongo import ReturnDocument
 from datetime import datetime
-import pytz
 import string
 import random
 
-from .schema import MarkSchema, MarkCreateSchema, MarkUpdateSchema, MarkAddTagSchema, MarkAddAnnotationSchema, MarkListQuerySchema
+from flask import request, Blueprint
+from marshmallow import EXCLUDE
+from marshmallow.exceptions import ValidationError
+from pymongo import ReturnDocument
+import pytz
+
+from .schema import MarkAddTagSchema, MarkAddAnnotationSchema, MarkSchema
+from .schema import MarkCreateSchema, MarkListQuerySchema, MarkUpdateSchema
 from .db import get_db
 from . import settings
 
@@ -21,7 +23,10 @@ bp.register_error_handler(ValidationError, lambda e: (e.messages, 400))
 class DB:
     def __getattribute__(self, key):
         return getattr(get_db(), key)
+
+
 db = DB()
+
 
 @bp.route('/marks/', methods=['POST'])
 def create_mark():
@@ -36,8 +41,8 @@ def create_mark():
 def update_mark(mark_id):
     data = MarkUpdateSchema().load(request.json or {})
     mark = db.marks.find_one_and_update(
-        {'id': mark_id}, 
-        {'$set': data}, 
+        {'id': mark_id},
+        {'$set': data},
         return_document=ReturnDocument.AFTER
     )
     return MarkSchema().dump(mark)
@@ -60,10 +65,12 @@ def add_or_remove_tag(mark_id, action):
 def add_or_remove_annotation(mark_id, action):
     if action not in ['add', 'delete']:
         return 'Invalid action', 404
-    annotation = MarkAddAnnotationSchema().load(request.json or {})['annotation']
+    annotation = MarkAddAnnotationSchema().load(
+        request.json or {})['annotation']
+    mongo_action = ('$push' if action == 'add' else '$pull')
     mark = db.marks.find_one_and_update(
         {'id': mark_id},
-        {('$push' if action == 'add' else '$pull'): {'annotations': annotation}},
+        {mongo_action: {'annotations': annotation}},
         return_document=ReturnDocument.AFTER
     )
     return MarkSchema().dump(mark)

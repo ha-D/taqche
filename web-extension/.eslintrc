@@ -1,0 +1,11 @@
+{
+    "extends": "airbnb",
+    "env": {
+        "browser": true
+    },
+    "rules": {
+        "no-underscore-dangle": "off",
+        "arrow-parens": ["error", "as-needed"],
+        "no-else-return": "off"
+    }
+}

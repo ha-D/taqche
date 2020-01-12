@@ -2,15 +2,16 @@ import pytest
 import mongomock
 from copy import deepcopy
 
-from taqche import create_app, settings
+from taqche import create_app
+
 
 @pytest.fixture
 def app():
     mongo = mongomock.MongoClient()
     app = create_app({}, db=mongo.db)
     app.db = mongo.db
-    
     return app
+
 
 @pytest.fixture
 def client(app):
@@ -22,6 +23,7 @@ def client(app):
 sample_request = {
     'platform': 'youtube',
     'source_id': 'yudvsa',
+    'title': 'A Title',
     'channel': 'WSH',
     'tags': ['tag1', 'tag2'],
     'annotations': ['annotation1', 'annotation2']
@@ -46,13 +48,15 @@ def test_create_platform_required(client):
 
 
 def test_create_source_id_required(client):
-    data = {k: sample_request[k] for k in sample_request if k != 'source_id'}
+    data = {k: sample_request[k] for k in sample_request
+            if k != 'source_id'}
     resp = client.post('/marks/', json=data)
     assert resp.status_code == 400
 
 
 def test_create_optional_fields(client):
-    data = {k: sample_request[k] for k in sample_request if k == 'source_id' or k == 'platform'}
+    data = {k: sample_request[k] for k in sample_request
+            if k == 'source_id' or k == 'platform' or k == 'title'}
     resp = client.post('/marks/', json=data)
     assert resp.status_code == 201
 
@@ -79,7 +83,7 @@ def test_add_tag(client):
     data['id'] = 'mark1'
     client.db.marks.insert_one(deepcopy(data))
 
-    resp = client.post('/mark/mark1/tag', json={'tag': 'tag3'})
+    resp = client.post('/mark/mark1/tag/add', json={'tag': 'tag3'})
     assert resp.status_code == 200
 
     new_data = deepcopy(data)
@@ -93,7 +97,10 @@ def test_add_annotation(client):
     data['id'] = 'mark1'
     client.db.marks.insert_one(deepcopy(data))
 
-    resp = client.post('/mark/mark1/annotation', json={'annotation': 'annotation3'})
+    resp = client.post(
+        '/mark/mark1/annotation/add',
+        json={'annotation': 'annotation3'}
+    )
     assert resp.status_code == 200
 
     new_data = deepcopy(data)
@@ -107,7 +114,7 @@ def test_delete_tag(client):
     data['id'] = 'mark1'
     client.db.marks.insert_one(deepcopy(data))
 
-    resp = client.delete('/mark/mark1/tag', json={'tag': 'tag2'})
+    resp = client.post('/mark/mark1/tag/delete', json={'tag': 'tag2'})
     assert resp.status_code == 200
 
     new_data = deepcopy(data)
@@ -121,7 +128,10 @@ def test_delete_annotation(client):
     data['id'] = 'mark1'
     client.db.marks.insert_one(deepcopy(data))
 
-    resp = client.delete('/mark/mark1/annotation', json={'annotation': 'annotation2'})
+    resp = client.post(
+        '/mark/mark1/annotation/delete',
+        json={'annotation': 'annotation2'}
+    )
     assert resp.status_code == 200
 
     new_data = deepcopy(data)

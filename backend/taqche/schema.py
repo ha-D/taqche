@@ -1,5 +1,4 @@
 from marshmallow import Schema, fields, EXCLUDE, pre_load
-from datetime import datetime
 
 
 class MarkSchema(Schema):
@@ -48,4 +47,4 @@ class MarkListQuerySchema(Schema):
     source_id = fields.Str()
 
     class Meta:
-        uknown = EXCLUDE
+        unknown = EXCLUDE
