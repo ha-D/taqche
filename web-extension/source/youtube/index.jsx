@@ -8,22 +8,41 @@ import { createLogger } from 'redux-logger';
 import reducer from '../redux/reducers';
 import App from './App';
 
-const ads = document.getElementById('offer-module');
-if (ads) {
-  ads.remove();
+
+function getContainer() {
+  return new Promise(resolve => {
+    const interval = setInterval(() => {
+      const container = document.getElementById('secondary-inner');
+      if (container) {
+        clearInterval(interval);
+        resolve(container);
+      }
+    }, 1000);
+  });
 }
 
-const container = document.getElementById('secondary-inner');
-const content = document.createElement('div');
-content.classList = 'style-scope ytd-watch-flexy';
-content.id = 'cosmo';
-container.prepend(content);
 
-const store = createStore(reducer, applyMiddleware(thunkMiddleware, createLogger()));
+function createApp() {
+  getContainer()
+    .then(container => {
+      const ads = document.getElementById('offer-module');
+      if (ads) {
+        ads.remove();
+      }
 
-ReactDOM.render(
-  <Provider store={store}>
-    <App />
-  </Provider>,
-  content,
-);
+      const content = document.createElement('div');
+      content.classList = 'style-scope ytd-watch-flexy';
+      content.id = 'taqche';
+      container.prepend(content);
+      const store = createStore(reducer, applyMiddleware(thunkMiddleware, createLogger()));
+
+      ReactDOM.render(
+        <Provider store={store}>
+          <App />
+        </Provider>,
+        content,
+      );
+    });
+}
+
+createApp();
