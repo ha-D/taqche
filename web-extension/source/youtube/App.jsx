@@ -32,6 +32,10 @@ function App({
   isCreateMarkInProgress,
 }) {
   useEffect(() => {
+    YT.addVideoChangeListener(() => {
+      console.log('YEP IT"S CHANGED');
+      fetchMarks('youtube', YT.getVideoId());
+    });
     fetchMarks('youtube', YT.getVideoId());
   }, []);
 

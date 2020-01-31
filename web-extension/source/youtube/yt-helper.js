@@ -32,3 +32,21 @@ export function getVideoData() {
 export function setCurrentTime(time) {
   youtubePlayer.currentTime = time;
 }
+
+const videoChangeListeners = [];
+let videoChangeChecker = null;
+let previousVideoId = null;
+
+export function addVideoChangeListener(listener) {
+  videoChangeListeners.push(listener);
+  if (videoChangeChecker == null) {
+    previousVideoId = getVideoId();
+    videoChangeChecker = setInterval(() => {
+      const newVideoId = getVideoId();
+      if (newVideoId !== previousVideoId) {
+        previousVideoId = newVideoId;
+        videoChangeListeners.forEach(l => l(newVideoId));
+      }
+    }, 1000);
+  }
+}
