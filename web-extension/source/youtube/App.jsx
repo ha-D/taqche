@@ -99,8 +99,8 @@ function App({
 }
 
 App.propTypes = {
-  rangedMarks: PropTypes.arrayOf(PropTypes.shape(MarkSchema)).isRequired,
-  rangelessMarks: PropTypes.arrayOf(PropTypes.shape(RangedMarkSchema)).isRequired,
+  rangedMarks: PropTypes.arrayOf(PropTypes.shape(RangedMarkSchema)).isRequired,
+  rangelessMarks: PropTypes.arrayOf(PropTypes.shape(MarkSchema)).isRequired,
   createMark: PropTypes.func.isRequired,
   fetchMarks: PropTypes.func.isRequired,
   isLoading: PropTypes.bool.isRequired,

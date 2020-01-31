@@ -26,9 +26,9 @@ const _fetchMarks = (status, marks) => ({
 
 export const fetchMarks = (platform, sourceId) => dispatch => {
   dispatch(_fetchMarks(null));
-  api.get('/marks/', { params: { platform, source_id: sourceId } })
-    .then(resp => {
-      dispatch(_fetchMarks('success', resp.data.results));
+  api.fetchMarks(platform, sourceId)
+    .then(results => {
+      dispatch(_fetchMarks('success', results));
     })
     .catch(e => {
       dispatch(_fetchMarks('fail'));
@@ -53,12 +53,13 @@ const _createMark = (status, mark) => ({
 
 export const createMark = mark => dispatch => {
   dispatch(_createMark(null, mark));
-  return api.post('/marks/', mark)
+  return api.createMark(mark)
     .then(resp => {
-      dispatch(receiveMark(resp.data));
-      dispatch(_createMark('success', resp.data));
+      dispatch(receiveMark(resp));
+      dispatch(_createMark('success', resp));
       return true;
-    }).catch(e => {
+    })
+    .catch(e => {
       dispatch(_createMark('fail', mark));
       dispatch(publishNotif('error', `Creating mark failed: ${e.message}`));
       return false;
@@ -75,9 +76,9 @@ const _updateMarkRange = (status, markId, start, end) => ({
 
 export const updateMarkRange = (markId, start, end) => dispatch => {
   dispatch(_updateMarkRange(null, markId, start, end));
-  api.post(`/mark/${markId}/`, { start, end })
+  api.updateMarkRange(markId, start, end)
     .then(resp => {
-      dispatch(receiveMark(resp.data));
+      dispatch(receiveMark(resp));
       dispatch(_updateMarkRange('success', markId));
       return true;
     }).catch(e => {
@@ -97,9 +98,9 @@ const _addTag = (status, markId, tag) => ({
 
 export const addTag = (markId, tag) => dispatch => {
   dispatch(_addTag(null, markId, tag));
-  return api.post(`/mark/${markId}/tag/add`, { tag })
+  return api.addTag(markId, tag)
     .then(resp => {
-      dispatch(receiveMark(resp.data));
+      dispatch(receiveMark(resp));
       dispatch(_addTag('success', markId, tag));
       return true;
     }).catch(e => {
@@ -119,9 +120,9 @@ const _addAnnotation = (status, markId, annotation) => ({
 
 export const addAnnotation = (markId, annotation) => dispatch => {
   dispatch(_addAnnotation(null, markId, annotation));
-  return api.post(`/mark/${markId}/annotation/add`, { annotation })
+  return api.addAnnotation(markId, annotation)
     .then(resp => {
-      dispatch(receiveMark(resp.data));
+      dispatch(receiveMark(resp));
       dispatch(_addAnnotation('success', markId, annotation));
       return true;
     }).catch(e => {
@@ -141,9 +142,9 @@ const _deleteTag = (status, markId, tag) => ({
 
 export const deleteTag = (markId, tag) => dispatch => {
   dispatch(_deleteTag(null, markId, tag));
-  return api.post(`/mark/${markId}/tag/delete`, { tag })
+  return api.deleteTag(markId, tag)
     .then(resp => {
-      dispatch(receiveMark(resp.data));
+      dispatch(receiveMark(resp));
       dispatch(_deleteTag('success', markId, tag));
       return true;
     }).catch(e => {
@@ -163,9 +164,9 @@ const _deleteAnnotation = (status, markId, annotation) => ({
 
 export const deleteAnnotation = (markId, annotation) => dispatch => {
   dispatch(_deleteAnnotation(null, markId, annotation));
-  return api.post(`/mark/${markId}/annotation/delete`, { annotation })
+  return api.deleteAnnotation(markId, annotation)
     .then(resp => {
-      dispatch(receiveMark(resp.data));
+      dispatch(receiveMark(resp));
       dispatch(_deleteAnnotation('success', markId, annotation));
       return true;
     }).catch(e => {
