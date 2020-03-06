@@ -20,12 +20,19 @@ export function getVideoId() {
   return new URLSearchParams(window.location.search).get('v');
 }
 
+export function getVideoUploadDate() {
+  const dateStr = document.querySelector('#date > yt-formatted-string').textContent;
+  const d = new Date(Date.parse(dateStr));
+  return `${d.getFullYear()}-${('0'+(d.getMonth()+1)).slice(-2)}-${('0' + d.getDate()).slice(-2)}`;
+}
+
 export function getVideoData() {
   return {
     platform: 'youtube',
     channel: getChannel(),
     source_id: getVideoId(),
     title: getVideoTitle(),
+    date: getVideoUploadDate(),
   };
 }
 

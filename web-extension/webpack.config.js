@@ -7,7 +7,9 @@ module.exports = {
 	devtool: 'sourcemap',
 	stats: 'errors-only',
 	entry: {
-		youtube: './source/youtube/index.jsx'
+		youtube: './source/youtube/index.jsx',
+		background: './source/background.js',
+		options: './source/options/options.jsx'
 	},
 	output: {
 		path: path.join(__dirname, 'distribution'),
@@ -23,6 +25,9 @@ module.exports = {
 			},
 			{
 				from: 'node_modules/webextension-polyfill/dist/browser-polyfill.min.js'
+			},
+			{
+				from: './source/options/options.html'
 			}
 		])
 	],

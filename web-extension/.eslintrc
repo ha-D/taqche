@@ -6,6 +6,8 @@
     "rules": {
         "no-underscore-dangle": "off",
         "arrow-parens": ["error", "as-needed"],
-        "no-else-return": "off"
+        "no-else-return": "off",
+        "max-classes-per-file": "off",
+        "class-methods-use-this": "off"
     }
 }

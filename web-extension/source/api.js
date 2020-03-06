@@ -1,5 +1,3 @@
-import axios from 'axios';
-
 
 function makeId(length) {
   let result = '';
@@ -12,17 +10,23 @@ function makeId(length) {
 }
 
 class API {
-  constructor() {
-    this.axios = axios.create({
-      baseURL: 'http://localhost:9200',
-      timeout: 10000,
+  request(method, path, data) {
+    return new Promise((resolve, reject) => {
+      chrome.runtime.sendMessage({ method, path, data }, messageResponse => {
+        const [response, error] = messageResponse;
+        if (response === null) {
+          reject(error);
+        } else {
+          resolve(response);
+        }
+      });
     });
   }
 
   createMark(mark) {
     const markId = makeId(11);
     const markWithId = { ...mark, id: markId };
-    return this.axios.put(`marks/_doc/${markId}`, markWithId)
+    return this.request('put', `_doc/${markId}`, markWithId)
       .then(resp => {
         if (resp.status === 201) {
           return markWithId;
@@ -44,11 +48,9 @@ class API {
         },
       },
     };
-    return this.axios.get('/marks/_search', {
-      params: {
-        source_content_type: 'application/json',
-        source: JSON.stringify(query),
-      },
+    return this.request('get', '_search', {
+      source_content_type: 'application/json',
+      source: JSON.stringify(query),
     }).then(resp => resp.data.hits.hits)
       .then(results => results.map(item => item._source))
       .then(results => results.map(item => ({
@@ -59,12 +61,12 @@ class API {
   }
 
   getMark(markId) {
-    return this.axios.get(`/marks/_doc/${markId}`)
+    return this.request('get', `_doc/${markId}`)
       .then(resp => resp.data._source);
   }
 
   updateMarkRange(markId, start, end) {
-    return this.axios.post(`marks/_update/${markId}`, {
+    return this.request('post', `_update/${markId}`, {
       doc: { start, end },
     })
       .then(() => this.getMark(markId));
@@ -79,7 +81,7 @@ class API {
       },
     };
 
-    return this.axios.post(`marks/_update/${markId}`, script)
+    return this.request('post', `_update/${markId}`, script)
       .then(() => this.getMark(markId));
   }
 
@@ -92,7 +94,7 @@ class API {
       },
     };
 
-    return this.axios.post(`marks/_update/${markId}`, script)
+    return this.request('post', `_update/${markId}`, script)
       .then(() => this.getMark(markId));
   }
 
@@ -105,7 +107,7 @@ class API {
       },
     };
 
-    return this.axios.post(`marks/_update/${markId}`, script)
+    return this.request('post', `_update/${markId}`, script)
       .then(() => this.getMark(markId));
   }
 
@@ -118,7 +120,7 @@ class API {
       },
     };
 
-    return this.axios.post(`marks/_update/${markId}`, script)
+    return this.request('post', `_update/${markId}`, script)
       .then(() => this.getMark(markId));
   }
 }
