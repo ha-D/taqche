@@ -1,8 +1,0 @@
-flask
-flask-pymongo
-marshmallow
-pytz
-python-dotenv
-pytest
-mongomock
-flask8
