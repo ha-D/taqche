@@ -35,7 +35,12 @@
 		"web-ext-submit": "^3.1.1",
 		"webpack": "^4.36.1",
 		"webpack-cli": "^3.3.6",
-		"xo": "^0.24.0"
+		"xo": "^0.24.0",
+		"postcss-flexbugs-fixes": "3.2.0",
+		"postcss-loader": "2.0.8",
+		"style-loader": "0.19.0",
+		"css-loader": "0.28.7",
+		"autoprefixer": "7.1.6"
 	},
 	"dependencies": {
 		"@material-ui/core": "^4.8.3",
@@ -51,7 +56,8 @@
 		"redux-logger": "^3.0.6",
 		"redux-thunk": "^2.3.0",
 		"webext-options-sync": "^0.21.2",
-		"webextension-polyfill": "^0.4.0"
+		"webextension-polyfill": "^0.4.0",
+		"searchkit": "^2.4.1"
 	},
 	"xo": {
 		"envs": [

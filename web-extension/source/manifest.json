@@ -1,7 +1,7 @@
 {
 	"name": "Taqche Extension",
-	"version": "0.0.0",
-	"description": "An awesome new browser extension",
+	"version": "0.0.1",
+	"description": "A content annotator",
 	"homepage_url": "https://github.com/ha-D/taqche",
 	"author": "Hadi Zol",
 	"manifest_version": 2,
@@ -16,14 +16,17 @@
 	"content_scripts": [
 		{
 			"matches": ["https://www.youtube.com/watch*"],
-			"js": ["youtube.js"],
+			"js": ["youtube/index.js"],
 			"run_at": "document_idle"
 		}
 	],
 	"background": {
-		"scripts": ["background.js"]
+		"scripts": ["background/index.js"]
 	},
 	"options_ui": {
-		"page": "options.html"
+		"page": "options/index.html"
+	},
+	"browser_action": {
+	"default_title": "Taqche"     
 	}
 }
