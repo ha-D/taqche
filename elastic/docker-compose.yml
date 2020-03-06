@@ -5,7 +5,7 @@ services:
     container_name: elasticsearch
     volumes:
         - ./elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
-        - esdata:/usr/share/elasticsearch/data
+        - ./esdata:/usr/share/elasticsearch/data
     ports:
       - "9200:9200"
       - "9300:9300"

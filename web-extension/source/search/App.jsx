@@ -8,7 +8,7 @@ import { SearchkitManager,SearchkitProvider,
   ActionBar, ActionBarRow, SideBar } from 'searchkit';
 import './index.css';
 
-const host = 'http://localhost:9200/marks';
+const host = localStorage.getItem('es_url');
 const searchkit = new SearchkitManager(host);
 
 const GridItem = props => {
